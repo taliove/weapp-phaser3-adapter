@@ -1,0 +1,32 @@
+{
+  "name": "weapp-phaser3-adapter",
+  "version": "0.0.1",
+  "description": "Phaser3 Adapter for WeChat Mini Program",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "webpack --config build/webpack.config.js --watch",
+    "build": "webpack --hide-modules --config build/webpack.config.js",
+    "test": "jest"
+  },
+  "author": "linkqjlin",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^6.1.2",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-stage-0": "^6.5.0",
+    "eslint": "^3.4.0",
+    "eslint-friendly-formatter": "^2.0.6",
+    "eslint-loader": "^1.5.0",
+    "eslint-plugin-jest": "^20.0.3",
+    "eventemitter2": "^4.1.2",
+    "jest": "^20.0.4",
+    "path": "^0.12.7",
+    "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.15.0"
+  }
+}
