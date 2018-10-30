@@ -59,6 +59,9 @@ let URL = function () {
 };
 URL.createObjectURL = function (buffer) {
     return "data:image/png;base64," + base64ArrayBuffer(buffer);
-}
+};
+URL.revokeObjectURL = function () {
+    //nothing
+};
 
 export default URL;
