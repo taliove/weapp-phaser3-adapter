@@ -12,14 +12,15 @@ export localStorage from './localStorage'
 export location from './location'
 export * from './WindowProperties'
 export * from './constructor'
+export URL from './URL'
 
 // 暴露全局的 canvas
 const canvas = new Canvas()
 
-export { canvas }
-export { setTimeout }
-export { setInterval }
-export { clearTimeout }
-export { clearInterval }
-export { requestAnimationFrame }
-export { cancelAnimationFrame }
+export {canvas}
+export {setTimeout}
+export {setInterval}
+export {clearTimeout}
+export {clearInterval}
+export {requestAnimationFrame}
+export {cancelAnimationFrame}
