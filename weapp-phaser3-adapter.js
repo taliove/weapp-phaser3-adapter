@@ -1611,6 +1611,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	/**
+	 * 将arrayBuffer转换为base64
+	 * @param arrayBuffer
+	 * @returns {string}
+	 */
 	function base64ArrayBuffer(arrayBuffer) {
 	    var base64 = '';
 	    var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -1666,6 +1671,9 @@
 	var URL = function URL() {};
 	URL.createObjectURL = function (buffer) {
 	    return "data:image/png;base64," + base64ArrayBuffer(buffer);
+	};
+	URL.revokeObjectURL = function () {
+	    //nothing
 	};
 
 	exports.default = URL;
