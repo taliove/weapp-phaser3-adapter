@@ -124,7 +124,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.cancelAnimationFrame = exports.requestAnimationFrame = exports.clearInterval = exports.clearTimeout = exports.setInterval = exports.setTimeout = exports.canvas = exports.location = exports.localStorage = exports.HTMLElement = exports.FileReader = exports.Audio = exports.Image = exports.WebSocket = exports.XMLHttpRequest = exports.navigator = exports.document = undefined;
+	exports.cancelAnimationFrame = exports.requestAnimationFrame = exports.clearInterval = exports.clearTimeout = exports.setInterval = exports.setTimeout = exports.canvas = exports.URL = exports.location = exports.localStorage = exports.HTMLElement = exports.FileReader = exports.Audio = exports.Image = exports.WebSocket = exports.XMLHttpRequest = exports.navigator = exports.document = undefined;
 
 	var _WindowProperties = __webpack_require__(2);
 
@@ -194,6 +194,10 @@
 
 	var _location3 = _interopRequireDefault(_location2);
 
+	var _URL2 = __webpack_require__(24);
+
+	var _URL3 = _interopRequireDefault(_URL2);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.document = _document3.default;
@@ -206,9 +210,10 @@
 	exports.HTMLElement = _HTMLElement3.default;
 	exports.localStorage = _localStorage3.default;
 	exports.location = _location3.default;
-
+	exports.URL = _URL3.default;
 
 	// 暴露全局的 canvas
+
 	var canvas = new _Canvas2.default();
 
 	exports.canvas = canvas;
@@ -846,7 +851,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -875,134 +880,135 @@
 	var _autoplay = new WeakMap();
 
 	var Audio = function (_HTMLAudioElement) {
-	  _inherits(Audio, _HTMLAudioElement);
+	    _inherits(Audio, _HTMLAudioElement);
 
-	  function Audio(url) {
-	    _classCallCheck(this, Audio);
+	    function Audio(url) {
+	        _classCallCheck(this, Audio);
 
-	    var _this = _possibleConstructorReturn(this, (Audio.__proto__ || Object.getPrototypeOf(Audio)).call(this));
+	        var _this = _possibleConstructorReturn(this, (Audio.__proto__ || Object.getPrototypeOf(Audio)).call(this));
 
-	    _this.HAVE_NOTHING = HAVE_NOTHING;
-	    _this.HAVE_METADATA = HAVE_METADATA;
-	    _this.HAVE_CURRENT_DATA = HAVE_CURRENT_DATA;
-	    _this.HAVE_FUTURE_DATA = HAVE_FUTURE_DATA;
-	    _this.HAVE_ENOUGH_DATA = HAVE_ENOUGH_DATA;
-	    _this.readyState = HAVE_NOTHING;
+	        _this.HAVE_NOTHING = HAVE_NOTHING;
+	        _this.HAVE_METADATA = HAVE_METADATA;
+	        _this.HAVE_CURRENT_DATA = HAVE_CURRENT_DATA;
+	        _this.HAVE_FUTURE_DATA = HAVE_FUTURE_DATA;
+	        _this.HAVE_ENOUGH_DATA = HAVE_ENOUGH_DATA;
+	        _this.readyState = HAVE_NOTHING;
 
 
-	    _src.set(_this, '');
+	        _src.set(_this, '');
+	        //  针对phaser3加入
+	        _this.dataset = {};
+	        var innerAudioContext = wx.createInnerAudioContext();
 
-	    var innerAudioContext = wx.createInnerAudioContext();
+	        _innerAudioContext.set(_this, innerAudioContext);
 
-	    _innerAudioContext.set(_this, innerAudioContext);
+	        innerAudioContext.onCanplay(function () {
+	            _this.dispatchEvent({ type: 'load' });
+	            _this.dispatchEvent({ type: 'loadend' });
+	            _this.dispatchEvent({ type: 'canplay' });
+	            _this.dispatchEvent({ type: 'canplaythrough' });
+	            _this.dispatchEvent({ type: 'loadedmetadata' });
+	            _this.readyState = HAVE_CURRENT_DATA;
+	        });
+	        innerAudioContext.onPlay(function () {
+	            _this.dispatchEvent({ type: 'play' });
+	        });
+	        innerAudioContext.onPause(function () {
+	            _this.dispatchEvent({ type: 'pause' });
+	        });
+	        innerAudioContext.onEnded(function () {
+	            _this.dispatchEvent({ type: 'ended' });
+	            _this.readyState = HAVE_ENOUGH_DATA;
+	        });
+	        innerAudioContext.onError(function () {
+	            _this.dispatchEvent({ type: 'error' });
+	        });
 
-	    innerAudioContext.onCanplay(function () {
-	      _this.dispatchEvent({ type: 'load' });
-	      _this.dispatchEvent({ type: 'loadend' });
-	      _this.dispatchEvent({ type: 'canplay' });
-	      _this.dispatchEvent({ type: 'canplaythrough' });
-	      _this.dispatchEvent({ type: 'loadedmetadata' });
-	      _this.readyState = HAVE_CURRENT_DATA;
-	    });
-	    innerAudioContext.onPlay(function () {
-	      _this.dispatchEvent({ type: 'play' });
-	    });
-	    innerAudioContext.onPause(function () {
-	      _this.dispatchEvent({ type: 'pause' });
-	    });
-	    innerAudioContext.onEnded(function () {
-	      _this.dispatchEvent({ type: 'ended' });
-	      _this.readyState = HAVE_ENOUGH_DATA;
-	    });
-	    innerAudioContext.onError(function () {
-	      _this.dispatchEvent({ type: 'error' });
-	    });
-
-	    if (url) {
-	      _innerAudioContext.get(_this).src = url;
+	        if (url) {
+	            _innerAudioContext.get(_this).src = url;
+	        }
+	        return _this;
 	    }
-	    return _this;
-	  }
 
-	  _createClass(Audio, [{
-	    key: 'load',
-	    value: function load() {
-	      console.warn('HTMLAudioElement.load() is not implemented.');
-	    }
-	  }, {
-	    key: 'play',
-	    value: function play() {
-	      _innerAudioContext.get(this).play();
-	    }
-	  }, {
-	    key: 'pause',
-	    value: function pause() {
-	      _innerAudioContext.get(this).pause();
-	    }
-	  }, {
-	    key: 'canPlayType',
-	    value: function canPlayType() {
-	      var mediaType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	    _createClass(Audio, [{
+	        key: 'load',
+	        value: function load() {
+	            console.warn('HTMLAudioElement.load() is not implemented.');
+	        }
+	    }, {
+	        key: 'play',
+	        value: function play() {
+	            _innerAudioContext.get(this).play();
+	        }
+	    }, {
+	        key: 'pause',
+	        value: function pause() {
+	            _innerAudioContext.get(this).pause();
+	        }
+	    }, {
+	        key: 'canPlayType',
+	        value: function canPlayType() {
+	            var mediaType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	      if (typeof mediaType !== 'string') {
-	        return '';
-	      }
+	            if (typeof mediaType !== 'string') {
+	                return '';
+	            }
 
-	      if (mediaType.indexOf('audio/mpeg') > -1 || mediaType.indexOf('audio/mp4')) {
-	        return 'probably';
-	      }
-	      return '';
-	    }
-	  }, {
-	    key: 'cloneNode',
-	    value: function cloneNode() {
-	      var newAudio = new Audio();
-	      newAudio.loop = _innerAudioContext.get(this).loop;
-	      newAudio.autoplay = _innerAudioContext.get(this).autoplay;
-	      newAudio.src = this.src;
-	      return newAudio;
-	    }
-	  }, {
-	    key: 'currentTime',
-	    get: function get() {
-	      return _innerAudioContext.get(this).currentTime;
-	    },
-	    set: function set(value) {
-	      _innerAudioContext.get(this).seek(value);
-	    }
-	  }, {
-	    key: 'src',
-	    get: function get() {
-	      return _src.get(this);
-	    },
-	    set: function set(value) {
-	      _src.set(this, value);
-	      _innerAudioContext.get(this).src = value;
-	    }
-	  }, {
-	    key: 'loop',
-	    get: function get() {
-	      return _innerAudioContext.get(this).loop;
-	    },
-	    set: function set(value) {
-	      _innerAudioContext.get(this).loop = value;
-	    }
-	  }, {
-	    key: 'autoplay',
-	    get: function get() {
-	      return _innerAudioContext.get(this).autoplay;
-	    },
-	    set: function set(value) {
-	      _innerAudioContext.get(this).autoplay = value;
-	    }
-	  }, {
-	    key: 'paused',
-	    get: function get() {
-	      return _innerAudioContext.get(this).paused;
-	    }
-	  }]);
+	            if (mediaType.indexOf('audio/mpeg') > -1 || mediaType.indexOf('audio/mp4')) {
+	                return 'probably';
+	            }
+	            return '';
+	        }
+	    }, {
+	        key: 'cloneNode',
+	        value: function cloneNode() {
+	            var newAudio = new Audio();
+	            newAudio.loop = _innerAudioContext.get(this).loop;
+	            newAudio.autoplay = _innerAudioContext.get(this).autoplay;
+	            newAudio.src = this.src;
+	            return newAudio;
+	        }
+	    }, {
+	        key: 'currentTime',
+	        get: function get() {
+	            return _innerAudioContext.get(this).currentTime;
+	        },
+	        set: function set(value) {
+	            _innerAudioContext.get(this).seek(value);
+	        }
+	    }, {
+	        key: 'src',
+	        get: function get() {
+	            return _src.get(this);
+	        },
+	        set: function set(value) {
+	            _src.set(this, value);
+	            _innerAudioContext.get(this).src = value;
+	        }
+	    }, {
+	        key: 'loop',
+	        get: function get() {
+	            return _innerAudioContext.get(this).loop;
+	        },
+	        set: function set(value) {
+	            _innerAudioContext.get(this).loop = value;
+	        }
+	    }, {
+	        key: 'autoplay',
+	        get: function get() {
+	            return _innerAudioContext.get(this).autoplay;
+	        },
+	        set: function set(value) {
+	            _innerAudioContext.get(this).autoplay = value;
+	        }
+	    }, {
+	        key: 'paused',
+	        get: function get() {
+	            return _innerAudioContext.get(this).paused;
+	        }
+	    }]);
 
-	  return Audio;
+	    return Audio;
 	}(_HTMLAudioElement3.default);
 
 	exports.default = Audio;
@@ -1202,7 +1208,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1216,164 +1222,170 @@
 	var _requestTask = new WeakMap();
 
 	function _triggerEvent(type) {
-	  if (typeof this['on' + type] === 'function') {
-	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-	      args[_key - 1] = arguments[_key];
-	    }
+	    if (typeof this['on' + type] === 'function') {
+	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	            args[_key - 1] = arguments[_key];
+	        }
 
-	    this['on' + type].apply(this, args);
-	  }
+	        args[0] = { target: { status: 200 } };
+	        this['on' + type].apply(this, args);
+	    }
 	}
 
 	function _changeReadyState(readyState) {
-	  this.readyState = readyState;
-	  _triggerEvent.call(this, 'readystatechange');
+	    this.readyState = readyState;
+	    _triggerEvent.call(this, 'readystatechange');
 	}
 
 	var XMLHttpRequest = function () {
-	  // TODO 没法模拟 HEADERS_RECEIVED 和 LOADING 两个状态
-	  function XMLHttpRequest() {
-	    _classCallCheck(this, XMLHttpRequest);
+	    // TODO 没法模拟 HEADERS_RECEIVED 和 LOADING 两个状态
+	    function XMLHttpRequest() {
+	        _classCallCheck(this, XMLHttpRequest);
 
-	    this.onabort = null;
-	    this.onerror = null;
-	    this.onload = null;
-	    this.onloadstart = null;
-	    this.onprogress = null;
-	    this.ontimeout = null;
-	    this.onloadend = null;
-	    this.onreadystatechange = null;
-	    this.readyState = 0;
-	    this.response = null;
-	    this.responseText = null;
-	    this.responseType = '';
-	    this.responseXML = null;
-	    this.status = 0;
-	    this.statusText = '';
-	    this.upload = {};
-	    this.withCredentials = false;
+	        this.onabort = null;
+	        this.onerror = null;
+	        this.onload = null;
+	        this.onloadstart = null;
+	        this.onprogress = null;
+	        this.ontimeout = null;
+	        this.onloadend = null;
+	        this.onreadystatechange = null;
+	        this.readyState = 0;
+	        this.response = null;
+	        this.responseText = null;
+	        this.responseType = '';
+	        this.responseXML = null;
+	        this.status = 0;
+	        this.statusText = '';
+	        this.upload = {};
+	        this.withCredentials = false;
 
-	    _requestHeader.set(this, {
-	      'content-type': 'application/x-www-form-urlencoded'
-	    });
-	    _responseHeader.set(this, {});
-	  }
-
-	  /*
-	   * TODO 这一批事件应该是在 XMLHttpRequestEventTarget.prototype 上面的
-	   */
-
-
-	  _createClass(XMLHttpRequest, [{
-	    key: 'abort',
-	    value: function abort() {
-	      var myRequestTask = _requestTask.get(this);
-
-	      if (myRequestTask) {
-	        myRequestTask.abort();
-	      }
-	    }
-	  }, {
-	    key: 'getAllResponseHeaders',
-	    value: function getAllResponseHeaders() {
-	      var responseHeader = _responseHeader.get(this);
-
-	      return Object.keys(responseHeader).map(function (header) {
-	        return header + ': ' + responseHeader[header];
-	      }).join('\n');
-	    }
-	  }, {
-	    key: 'getResponseHeader',
-	    value: function getResponseHeader(header) {
-	      return _responseHeader.get(this)[header];
-	    }
-	  }, {
-	    key: 'open',
-	    value: function open(method, url /* async, user, password 这几个参数在小程序内不支持*/) {
-	      _method.set(this, method);
-	      _url.set(this, url);
-	      _changeReadyState.call(this, XMLHttpRequest.OPENED);
-	    }
-	  }, {
-	    key: 'overrideMimeType',
-	    value: function overrideMimeType() {}
-	  }, {
-	    key: 'send',
-	    value: function send() {
-	      var _this = this;
-
-	      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-	      if (this.readyState !== XMLHttpRequest.OPENED) {
-	        throw new Error("Failed to execute 'send' on 'XMLHttpRequest': The object's state must be OPENED.");
-	      } else {
-	        wx.request({
-	          data: data,
-	          url: _url.get(this),
-	          method: _method.get(this),
-	          header: _requestHeader.get(this),
-	          responseType: this.responseType,
-	          success: function success(_ref) {
-	            var data = _ref.data,
-	                statusCode = _ref.statusCode,
-	                header = _ref.header;
-
-	            if (typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
-	              try {
-	                data = JSON.stringify(data);
-	              } catch (e) {
-	                data = data;
-	              }
-	            }
-
-	            _this.status = statusCode;
-	            _responseHeader.set(_this, header);
-	            _triggerEvent.call(_this, 'loadstart');
-	            _changeReadyState.call(_this, XMLHttpRequest.HEADERS_RECEIVED);
-	            _changeReadyState.call(_this, XMLHttpRequest.LOADING);
-
-	            _this.response = data;
-
-	            if (data instanceof ArrayBuffer) {
-	              _this.responseText = '';
-	              var bytes = new Uint8Array(data);
-	              var len = bytes.byteLength;
-
-	              for (var i = 0; i < len; i++) {
-	                _this.responseText += String.fromCharCode(bytes[i]);
-	              }
-	            } else {
-	              _this.responseText = data;
-	            }
-	            _changeReadyState.call(_this, XMLHttpRequest.DONE);
-	            _triggerEvent.call(_this, 'load');
-	            _triggerEvent.call(_this, 'loadend');
-	          },
-	          fail: function fail(_ref2) {
-	            var errMsg = _ref2.errMsg;
-
-	            // TODO 规范错误
-	            if (errMsg.indexOf('abort') !== -1) {
-	              _triggerEvent.call(_this, 'abort');
-	            } else {
-	              _triggerEvent.call(_this, 'error', errMsg);
-	            }
-	            _triggerEvent.call(_this, 'loadend');
-	          }
+	        _requestHeader.set(this, {
+	            'content-type': 'application/x-www-form-urlencoded'
 	        });
-	      }
+	        _responseHeader.set(this, {});
 	    }
-	  }, {
-	    key: 'setRequestHeader',
-	    value: function setRequestHeader(header, value) {
-	      var myHeader = _requestHeader.get(this);
 
-	      myHeader[header] = value;
-	      _requestHeader.set(this, myHeader);
-	    }
-	  }]);
+	    /*
+	     * TODO 这一批事件应该是在 XMLHttpRequestEventTarget.prototype 上面的
+	     */
 
-	  return XMLHttpRequest;
+
+	    _createClass(XMLHttpRequest, [{
+	        key: 'abort',
+	        value: function abort() {
+	            var myRequestTask = _requestTask.get(this);
+
+	            if (myRequestTask) {
+	                myRequestTask.abort();
+	            }
+	        }
+	    }, {
+	        key: 'getAllResponseHeaders',
+	        value: function getAllResponseHeaders() {
+	            var responseHeader = _responseHeader.get(this);
+
+	            return Object.keys(responseHeader).map(function (header) {
+	                return header + ': ' + responseHeader[header];
+	            }).join('\n');
+	        }
+	    }, {
+	        key: 'getResponseHeader',
+	        value: function getResponseHeader(header) {
+	            return _responseHeader.get(this)[header];
+	        }
+	    }, {
+	        key: 'open',
+	        value: function open(method, url /* async, user, password 这几个参数在小程序内不支持*/) {
+	            _method.set(this, method);
+	            _url.set(this, url);
+	            _changeReadyState.call(this, XMLHttpRequest.OPENED);
+	        }
+	    }, {
+	        key: 'overrideMimeType',
+	        value: function overrideMimeType() {}
+	    }, {
+	        key: 'send',
+	        value: function send() {
+	            var _this = this;
+
+	            var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	            if (this.readyState !== XMLHttpRequest.OPENED) {
+	                throw new Error("Failed to execute 'send' on 'XMLHttpRequest': The object's state must be OPENED.");
+	            } else {
+	                //  对于phaser3使用blob类型，微信并不支持，所以使用微信支付的arraybuffer作为传输类型
+	                //  之后在其它地方将其处理成对应的内容
+	                if (this.responseType === "blob") {
+	                    this.responseType = "arraybuffer";
+	                }
+	                wx.request({
+	                    data: data,
+	                    url: _url.get(this),
+	                    method: _method.get(this),
+	                    header: _requestHeader.get(this),
+	                    responseType: this.responseType,
+	                    success: function success(_ref) {
+	                        var data = _ref.data,
+	                            statusCode = _ref.statusCode,
+	                            header = _ref.header;
+
+	                        if (typeof data !== 'string' && !(data instanceof ArrayBuffer)) {
+	                            try {
+	                                data = JSON.stringify(data);
+	                            } catch (e) {
+	                                data = data;
+	                            }
+	                        }
+
+	                        _this.status = statusCode;
+	                        _responseHeader.set(_this, header);
+	                        _triggerEvent.call(_this, 'loadstart');
+	                        _changeReadyState.call(_this, XMLHttpRequest.HEADERS_RECEIVED);
+	                        _changeReadyState.call(_this, XMLHttpRequest.LOADING);
+
+	                        _this.response = data;
+
+	                        if (data instanceof ArrayBuffer) {
+	                            _this.responseText = '';
+	                            var bytes = new Uint8Array(data);
+	                            var len = bytes.byteLength;
+
+	                            for (var i = 0; i < len; i++) {
+	                                _this.responseText += String.fromCharCode(bytes[i]);
+	                            }
+	                        } else {
+	                            _this.responseText = data;
+	                        }
+	                        _changeReadyState.call(_this, XMLHttpRequest.DONE);
+	                        _triggerEvent.call(_this, 'load');
+	                        _triggerEvent.call(_this, 'loadend');
+	                    },
+	                    fail: function fail(_ref2) {
+	                        var errMsg = _ref2.errMsg;
+
+	                        // TODO 规范错误
+	                        if (errMsg.indexOf('abort') !== -1) {
+	                            _triggerEvent.call(_this, 'abort');
+	                        } else {
+	                            _triggerEvent.call(_this, 'error', errMsg);
+	                        }
+	                        _triggerEvent.call(_this, 'loadend');
+	                    }
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'setRequestHeader',
+	        value: function setRequestHeader(header, value) {
+	            var myHeader = _requestHeader.get(this);
+
+	            myHeader[header] = value;
+	            _requestHeader.set(this, myHeader);
+	        }
+	    }]);
+
+	    return XMLHttpRequest;
 	}();
 
 	XMLHttpRequest.UNSEND = 0;
@@ -1589,6 +1601,74 @@
 	};
 
 	exports.default = location;
+
+/***/ }),
+/* 24 */
+/***/ (function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	function base64ArrayBuffer(arrayBuffer) {
+	    var base64 = '';
+	    var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+	    var bytes = new Uint8Array(arrayBuffer);
+	    var byteLength = bytes.byteLength;
+	    var byteRemainder = byteLength % 3;
+	    var mainLength = byteLength - byteRemainder;
+
+	    var a, b, c, d;
+	    var chunk;
+
+	    // Main loop deals with bytes in chunks of 3
+	    for (var i = 0; i < mainLength; i = i + 3) {
+	        // Combine the three bytes into a single integer
+	        chunk = bytes[i] << 16 | bytes[i + 1] << 8 | bytes[i + 2];
+
+	        // Use bitmasks to extract 6-bit segments from the triplet
+	        a = (chunk & 16515072) >> 18; // 16515072 = (2^6 - 1) << 18
+	        b = (chunk & 258048) >> 12; // 258048   = (2^6 - 1) << 12
+	        c = (chunk & 4032) >> 6; // 4032     = (2^6 - 1) << 6
+	        d = chunk & 63; // 63       = 2^6 - 1
+
+	        // Convert the raw binary segments to the appropriate ASCII encoding
+	        base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
+	    }
+
+	    // Deal with the remaining bytes and padding
+	    if (byteRemainder == 1) {
+	        chunk = bytes[mainLength];
+
+	        a = (chunk & 252) >> 2; // 252 = (2^6 - 1) << 2
+
+	        // Set the 4 least significant bits to zero
+	        b = (chunk & 3) << 4; // 3   = 2^2 - 1
+
+	        base64 += encodings[a] + encodings[b] + '==';
+	    } else if (byteRemainder == 2) {
+	        chunk = bytes[mainLength] << 8 | bytes[mainLength + 1];
+
+	        a = (chunk & 64512) >> 10; // 64512 = (2^6 - 1) << 10
+	        b = (chunk & 1008) >> 4; // 1008  = (2^6 - 1) << 4
+
+	        // Set the 2 least significant bits to zero
+	        c = (chunk & 15) << 2; // 15    = 2^4 - 1
+
+	        base64 += encodings[a] + encodings[b] + encodings[c] + '=';
+	    }
+
+	    return base64;
+	}
+
+	var URL = function URL() {};
+	URL.createObjectURL = function (buffer) {
+	    return "data:image/png;base64," + base64ArrayBuffer(buffer);
+	};
+
+	exports.default = URL;
 
 /***/ })
 /******/ ]);
